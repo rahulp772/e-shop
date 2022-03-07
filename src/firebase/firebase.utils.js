@@ -1,4 +1,5 @@
 import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
+import { getFirestore, collection, doc, setDoc, getDoc, getDocs, query, where } from "firebase/firestore";
 import firebase from 'firebase/compat/app';
 import * as firebaseui from 'firebaseui'
 import 'firebaseui/dist/firebaseui.css'
@@ -47,4 +48,30 @@ export const signInWithGoogle = async () => {
       const credential = GoogleAuthProvider.credentialFromError(error);
       // ...
     });
+}
+
+// db Related Services
+const db = getFirestore();
+
+export const getUser = async ({uid}) => {
+  const docRef = doc(db, "users", uid);
+  const docSnap = await getDoc(docRef);
+
+  if (docSnap.exists()) {
+    console.log("User already exist."); 
+    return docSnap.data();
+  } else {
+    console.log("User not exist."); 
+    return false
+  }
+}
+
+export const addUser = async (data) => {
+  try {
+    const addedUser = await setDoc(doc(db, "users", data.uid), data);
+    console.log("New User Created Successfully."); 
+    return addedUser;
+  } catch (e) {
+    console.error("Error adding document: ", e);
+  }
 }
