@@ -1,7 +1,6 @@
 import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
-import { getFirestore, collection, doc, setDoc, getDoc, getDocs, query, where } from "firebase/firestore";
+import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
 import firebase from 'firebase/compat/app';
-import * as firebaseui from 'firebaseui'
 import 'firebaseui/dist/firebaseui.css'
 
 const firebaseConfig = {
@@ -40,10 +39,10 @@ export const signInWithGoogle = async () => {
       // ...
     }).catch((error) => {
       // Handle Errors here.
-      const errorCode = error.code;
-      const errorMessage = error.message;
+      // const errorCode = error.code;
+      // const errorMessage = error.message;
       // The email of the user's account used.
-      const email = error.email;
+      // const email = error.email;
       // The AuthCredential type that was used.
       const credential = GoogleAuthProvider.credentialFromError(error);
       // ...

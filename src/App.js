@@ -1,43 +1,39 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
+import { connect, useSelector, useDispatch } from 'react-redux';
 import './App.css';
 import Header from './components/header/header-component';
 import Homepage from './pages/homepage/homepage.component';
 import ShopPage from './pages/shoppage/shop.component';
 import SignInAndSignUpPage from './pages/sign-in-and-sign-up/sign-in-and-sign-up.component';
 import { auth, addUser, getUser } from './firebase/firebase.utils';
+import { setCurrentUser } from '../src/redux/user/user.action';
 
-class App extends React.Component {
-  constructor(){
-    super();
+function App(props) {
 
-    this.state = {
-      currentUser: null
-    }
-  }
+  const { currentUser } = useSelector((state) => state.user)
+  console.log("CurrentUserState: ", currentUser);
 
-  unsubscribeFromAuth = null;
+  useEffect(() => {
 
-  componentDidMount() {
-    this.unsubscribeFromAuth = auth.onAuthStateChanged(async (user) => {
-      this.setState({currentUser: user});
-      if(user) {
-        let isAdded = await getUser({uid: user.uid});
+    auth.onAuthStateChanged(async (userAuth) => {
+      console.log("==========>", userAuth);
+
+      if(userAuth) {
+        props.setCurrentUser(userAuth)
+        let isAdded = await getUser({uid: userAuth.uid});
         if(isAdded === false) {
-          await addUser({uid: user.uid, displayName: user.displayName, email: user.email, phoneNumber: user.phoneNumber, photoURL: user.photoURL});
+          await addUser({uid: userAuth.uid, displayName: userAuth.displayName, email: userAuth.email, phoneNumber: userAuth.phoneNumber, photoURL: userAuth.photoURL});
         }
+      } else {
+        props.setCurrentUser(null);
       }
-    })
-  }
+    });
+  }, [props]);
 
-  componentWillUnmount() {
-    this.unsubscribeFromAuth = null;
-  }
-
-  render() {
     return (
       <div>
-        <Header currentUser={this.state.currentUser} />
+        <Header />
         <Routes>
           <Route exact path='/' element={<Homepage />} />
           <Route exact path='/shop' element={<ShopPage />} />
@@ -47,6 +43,11 @@ class App extends React.Component {
       </div>
     );
   }
-}
 
-export default App;
+const mapDispatchToProps = (dispatch) => {
+  return { 
+    setCurrentUser: (user) => dispatch(setCurrentUser(user))
+  }
+};
+
+export default connect(null, mapDispatchToProps)(App);
