@@ -6,7 +6,7 @@ import Header from './components/header/header-component';
 import Homepage from './pages/homepage/homepage.component';
 import ShopPage from './pages/shoppage/shop.component';
 import SignInAndSignUpPage from './pages/sign-in-and-sign-up/sign-in-and-sign-up.component';
-import { auth, addUser, getUser } from './firebase/firebase.utils';
+import { auth, addUser, getUser, createUserProfileDocument } from './firebase/firebase.utils';
 import { setCurrentUser } from '../src/redux/user/user.action';
 
 function App(props) {
@@ -15,18 +15,14 @@ function App(props) {
   console.log("CurrentUserState: ", currentUser);
 
   useEffect(() => {
-
+    const { setCurrentUser } = props;
     auth.onAuthStateChanged(async (userAuth) => {
       console.log("==========>", userAuth);
-
       if(userAuth) {
-        props.setCurrentUser(userAuth)
-        let isAdded = await getUser({uid: userAuth.uid});
-        if(isAdded === false) {
-          await addUser({uid: userAuth.uid, displayName: userAuth.displayName, email: userAuth.email, phoneNumber: userAuth.phoneNumber, photoURL: userAuth.photoURL});
-        }
+        let userData = await createUserProfileDocument(userAuth);
+        setCurrentUser(userData)
       } else {
-        props.setCurrentUser(null);
+        setCurrentUser(null);
       }
     });
   }, [props]);

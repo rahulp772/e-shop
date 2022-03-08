@@ -74,3 +74,18 @@ export const addUser = async (data) => {
     console.error("Error adding document: ", e);
   }
 }
+
+
+export const createUserProfileDocument = async (userAuth) => {
+  try{
+    let userData = await getUser({uid: userAuth.uid});
+    if(userData === false) {
+      userData = {uid: userAuth.uid, displayName: userAuth.displayName, email: userAuth.email, phoneNumber: userAuth.phoneNumber, photoURL: userAuth.photoURL};
+      await addUser(userData);
+    }
+    return userData;
+  } catch(err) {
+    console.error("Error  ", err);
+    throw err;
+  }
+}
