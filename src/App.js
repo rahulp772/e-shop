@@ -26,18 +26,17 @@ function App(props) {
     });
   }, []);
   
-    return (
-      <div>
-        <Header />
-        <Routes>
-          <Route exact path='/' element={<Homepage />} />
-          <Route exact path='/shop' element={<ShopPage />} />
-          {/* <Route exact path='/signin' element={<SignInAndSignUpPage />} /> */}
-          <Route exact path='/signin' element={ props.currentUser ? <Navigate to='/' /> : (<SignInAndSignUpPage />)} />
-          <Route exact path='*' element={<div>No Route Found</div>} />
-        </Routes>
-      </div>
-    );
+  return (
+    <div>
+      <Header />
+      <Routes>
+        <Route exact path='/' element={<Homepage />} />
+        <Route exact path='/shop' element={<ShopPage />} />
+        <Route exact path='/signin' element={ props.currentUser ? <Navigate to='/' /> : (<SignInAndSignUpPage />)} />
+        <Route exact path='*' element={<div>No Route Found</div>} />
+      </Routes>
+    </div>
+  );
 }
 
 const mapStateToProps = (({user}) => {
@@ -45,7 +44,7 @@ const mapStateToProps = (({user}) => {
 });
 
 const mapDispatchToProps = (dispatch) => {
-  return { 
+  return {
     setCurrentUser: (user) => dispatch(setCurrentUser(user))
   }
 };
