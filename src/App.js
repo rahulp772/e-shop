@@ -16,7 +16,7 @@ function App(props) {
 
   const { currentUser } = useSelector((state) => state.user)
   console.log("CurrentUserState: ", currentUser);
-  console.log("PROPS", props);
+  console.log("PROPS in APP component: ", props);
 
   useEffect(() => {
     const { setCurrentUser } = props;
@@ -34,7 +34,8 @@ function App(props) {
       <Header />
       <Routes>
         <Route exact path='/' element={<Homepage />} />
-        <Route path='/shop' element={<ShopPage />} />
+        {/* append * to shop page to tell reqct that shoppage has nested routes */}
+        <Route path='/shop/*' element={<ShopPage />} />
         <Route exact path='/checkout' element={<CheckoutPage />} />
         <Route exact path='/signin' element={ props.currentUser ? <Navigate to='/' /> : (<SignInAndSignUpPage />)} />
         <Route exact path='*' element={<div>No Route Found</div>} />
