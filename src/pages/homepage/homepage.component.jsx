@@ -1,14 +1,14 @@
 import React from "react";
-import { useLocation } from "react-router-dom";
-import './homepage.styles.scss';
+// import './homepage.styles.scss';
+
+import { HomepageContainer } from "./homepage.styles";
 
 import Directory from "../../components/directory/directory.component";
 
 const Homepage = () => {
-    let location = useLocation();
-    return <div className="homepage">
+    return <HomepageContainer>
         <Directory />
-    </div>
+    </HomepageContainer>
 }
 
 export default Homepage;
