@@ -1,5 +1,5 @@
 import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
-import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
+import { getFirestore, doc, setDoc, getDoc, collection, addDoc } from "firebase/firestore";
 import firebase from 'firebase/compat/app';
 import 'firebaseui/dist/firebaseui.css'
 
@@ -50,7 +50,7 @@ export const signInWithGoogle = async () => {
 }
 
 // db Related Services
-const db = getFirestore();
+export const db = getFirestore();
 
 export const getUser = async ({uid}) => {
   const docRef = doc(db, "users", uid);
@@ -88,4 +88,29 @@ export const createUserProfileDocument = async (userAuth) => {
     console.error("Error  ", err);
     throw err;
   }
+}
+
+export const addCollectionAndItems = (collectionKey, objectsToAdd) => {
+  objectsToAdd.forEach(async (obj) => {
+    const docRef = await addDoc(collection(db, collectionKey), obj);
+    console.log(docRef);
+    console.log('Document written with Id')
+  })
+}
+
+export const convertCollectionsSnapshotToMap = (collections) => {
+  const transformedCollections = collections.docs.map(doc => {
+    const {title, items } = doc.data();
+    return {
+      routeName: encodeURI(title),
+      id: doc.id,
+      title,
+      items
+    }
+  });
+
+  return transformedCollections.reduce((accumulator, collection) => {
+    accumulator[collection.title.toLowerCase()] = collection;
+    return accumulator;
+  }, {});
 }
