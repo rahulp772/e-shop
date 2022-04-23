@@ -21,7 +21,7 @@ const ShopPage = ({fetchCollectionStartAsync, selectIsCollectionLoaded}) => {
 
     useEffect(() => {
         fetchCollectionStartAsync();
-    },[]);
+    },[fetchCollectionStartAsync]);
 
     let params = useParams();
     return (<div className="shop-page">
